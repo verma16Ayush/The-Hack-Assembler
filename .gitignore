@@ -1,2 +1,4 @@
 .vscode/
 *.exe
+fio_test.cpp
+hello.txt

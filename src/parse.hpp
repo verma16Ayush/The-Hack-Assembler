@@ -104,54 +104,58 @@ public:
 
             switch (type)
             {
-            case 'L':
-                std::cout << "this shouldn't have happened" << std::endl;
-                break;
-            case 'A':
-            {
-                std::string rem = inst.substr(1);
-                if (is_number(rem))
+                case 'L':
                 {
-                    std::string bits = std::bitset<15>(std::stoi(rem)).to_string();
-                    outfile << "0" << bits << '\n';
+                    std::cout << "this shouldn't have happened" << std::endl;
+                    break;
                 }
-                else
+                case 'A':
                 {
-                    int mem_loc = table.is_present(rem);
-                    if (mem_loc == -1)
+                    std::string rem = inst.substr(1);
+                    if (is_number(rem))
                     {
-                        mem_loc = table.available_address();
-                        table.insert_symbol(rem, mem_loc);
+                        std::string bits = std::bitset<15>(std::stoi(rem)).to_string();
+                        outfile << "0" << bits << '\n';
                     }
-                    std::string bits = std::bitset<15>(mem_loc).to_string();
-                    outfile << "0" << bits << '\n';
+                    else
+                    {
+                        int mem_loc = table.is_present(rem);
+                        if (mem_loc == -1)
+                        {
+                            mem_loc = table.available_address();
+                            table.insert_symbol(rem, mem_loc);
+                        }
+                        std::string bits = std::bitset<15>(mem_loc).to_string();
+                        outfile << "0" << bits << '\n';
+                    }
+                    break;
                 }
-                break;
-            }
-            case 'C':
-            {
-                int eq_pos = inst.find('=');
-                int semi_pos = inst.find(';');
-
-                std::string comp_bits, dest_bits, jump_bits;
-                dest_bits = (eq_pos == -1) ? "000" : table.dest[inst.substr(0, eq_pos)];
-                jump_bits = (semi_pos == -1) ? "000" : table.jump[inst.substr(semi_pos+1)];
-
-                if(eq_pos == -1)
+                case 'C':
                 {
-                    comp_bits = table.comp[inst.substr(0, semi_pos)];
-                }
+                    int eq_pos = inst.find('=');
+                    int semi_pos = inst.find(';');
 
-                else if (semi_pos == -1)
+                    std::string comp_bits, dest_bits, jump_bits;
+                    dest_bits = (eq_pos == -1) ? "000" : table.dest[inst.substr(0, eq_pos)];
+                    jump_bits = (semi_pos == -1) ? "000" : table.jump[inst.substr(semi_pos+1)];
+
+                    if(eq_pos == -1)
+                    {
+                        comp_bits = table.comp[inst.substr(0, semi_pos)];
+                    }
+
+                    else if (semi_pos == -1)
+                    {
+                        comp_bits = table.comp[inst.substr(eq_pos+1)];
+                    }
+
+                    outfile << "111" << comp_bits << dest_bits << jump_bits << '\n';
+                    break;
+                }
+                default:
                 {
-                    comp_bits = table.comp[inst.substr(eq_pos+1)];
+                    break;
                 }
-
-                outfile << "111" << comp_bits << dest_bits << jump_bits << '\n';
-                break;
-            }
-            default:
-                break;
             }
         }
     }

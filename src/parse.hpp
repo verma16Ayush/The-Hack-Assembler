@@ -83,7 +83,7 @@ public:
         return first_pass;
     }
 
-    bool isNumber(std::string str)
+    bool is_number(std::string str)
     {
         //check if a string contains only numbers
         return (!str.empty() && std::all_of(str.begin(), str.end(), ::isdigit));
@@ -98,21 +98,58 @@ public:
         outfile_name = outfile_name + ".hack"; //create a correct output filename
         std::ofstream outfile(outfile_name);   //open output filestream
 
-        for(std::string inst : firstpass)
+        for (std::string inst : firstpass)
         {
             char type = get_instruction_type(inst);
 
             switch (type)
             {
             case 'L':
-                /* code */
+                std::cout << "this shouldn't have happened" << std::endl;
                 break;
             case 'A':
-                //code
+            {
+                std::string rem = inst.substr(1);
+                if (is_number(rem))
+                {
+                    std::string bits = std::bitset<15>(std::stoi(rem)).to_string();
+                    outfile << "0" << bits << '\n';
+                }
+                else
+                {
+                    int mem_loc = table.is_present(rem);
+                    if (mem_loc == -1)
+                    {
+                        mem_loc = table.available_address();
+                        table.insert_symbol(rem, mem_loc);
+                    }
+                    std::string bits = std::bitset<15>(mem_loc).to_string();
+                    outfile << "0" << bits << '\n';
+                }
                 break;
+            }
             case 'C':
-                //code
+            {
+                int eq_pos = inst.find('=');
+                int semi_pos = inst.find(';');
+
+                std::string comp_bits, dest_bits, jump_bits;
+                dest_bits = (eq_pos == -1) ? "000" : table.dest[inst.substr(0, eq_pos)];
+                jump_bits = (semi_pos == -1) ? "000" : table.jump[inst.substr(semi_pos+1)];
+
+                if(eq_pos == -1)
+                {
+                    comp_bits = table.comp[inst.substr(0, semi_pos)];
+                }
+
+                else if (semi_pos == -1)
+                {
+                    comp_bits = table.comp[inst.substr(eq_pos+1)];
+                }
+
+                outfile << "111" << comp_bits << dest_bits << jump_bits << '\n';
                 break;
+            }
             default:
                 break;
             }

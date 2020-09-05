@@ -69,15 +69,19 @@ public:
 
         for (std::string inst : instructions)
         {
-            inst_count++;
+            
             if (get_instruction_type(inst) == 'L')
             {
                 inst.erase(0, 1);
                 inst.erase(inst.size() - 1);
-                table.insert_symbol(inst, inst_count);
-                continue;
+                table.insert_symbol(inst, inst_count + 1);
+                // continue;
             }
-            first_pass.push_back(inst);
+            else
+            {
+                inst_count++;
+                first_pass.push_back(inst);    
+            }
         }
 
         return first_pass;

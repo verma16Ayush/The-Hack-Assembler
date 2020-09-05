@@ -1,4 +1,5 @@
 #include "parse.hpp"
+// #include "symbol_table.hpp"
 #include <iostream>
 
 int main(int argc, char* argv[])

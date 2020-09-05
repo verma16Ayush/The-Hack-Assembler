@@ -31,6 +31,5 @@
    @LOOP
    D;JGT
 (INFINITE_LOOP)
- 
    @INFINITE_LOOP
    0;JMP

@@ -34,7 +34,7 @@ public:
             std::string temp;
             while (std::getline(file, temp))
             {
-                if (temp.front() == '/') //comments
+                if (temp.front() == '/' || temp.empty()) //comments
                     continue;
                 temp.erase(0, temp.find_first_not_of(" \r\t\v\n"));                 //head-spaces
                 temp.erase(std::min(temp.find_first_of(" \r\t\v\n"), temp.size())); //traling spaces
@@ -89,12 +89,13 @@ public:
         return (!str.empty() && std::all_of(str.begin(), str.end(), ::isdigit));
     }
 
-    void assemble(std::vector<std::string> firstpass)
+    void assemble(std::vector<std::string> firstpass, std::string out_filename)
     {
         // just like 'Cap asked
-        int pos = filepath.find_last_of('\\');
-        int pos_dot = filepath.find('.');
-        std::string outfile_name = filepath.substr(pos + 1).erase(pos_dot);
+        int pos = out_filename.find_last_of('\\');
+        int pos_dot = out_filename.find('.');
+        out_filename.erase(pos_dot);
+        std::string outfile_name = out_filename.substr(pos+1);
         outfile_name = outfile_name + ".hack"; //create a correct output filename
         std::ofstream outfile(outfile_name);   //open output filestream
 

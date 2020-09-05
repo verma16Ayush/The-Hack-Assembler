@@ -119,7 +119,8 @@ D=M
 @SP
 AM=M+1
 M=D
-@THIS
+@TH
+IS
 D=M
 @SP
 AM=M+1

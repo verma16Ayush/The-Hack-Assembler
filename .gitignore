@@ -2,3 +2,4 @@
 *.exe
 fio_test.cpp
 hello.txt
+*.hack
